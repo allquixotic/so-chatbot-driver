@@ -21,3 +21,7 @@ A little project hacked out of the following:
 
  - The fact that PhantomJS is using a very old version of WebKit (approx. Safari 5.1 from 2011) with default **JSCore** as the JavaScript engine, instead of Chrome's superior V8.
  - The fact that the authors of SO-ChatBot felt the need to use every single experimental/advanced/brand-spanking-new JavaScript API under the sun. In fact, they're probably writing up a patch right now that is going to use an API that is being committed to V8 git next month. Hell, they probably **wrote** the damn thing.
+ 
+ ## License
+ 
+ Apache License 2.0 - http://www.apache.org/licenses/LICENSE-2.0.txt
