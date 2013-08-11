@@ -3,13 +3,18 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
+		<path id="wut">
+		  <fileset dir="third_party">
+			<include name="*.jar"/>
+		  </fileset>
+		</path>
 		<javac srcdir="src"
 			 destdir="bin"
-			 classpath="third_party/*.jar"
+			 classpathref="wut"
 			 debug="on"
 			 source="1.7"
-			 target="1.7"
-			/>
+			 target="1.7">
+			 </javac>
         <jar destfile="so-chatbot-driver.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="Driver"/>
