@@ -1,5 +1,8 @@
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -98,7 +101,6 @@ public class Driver
 	public void go(String s_username, String s_password, String scriptPath, String chatURL) throws InterruptedException, IOException, FileNotFoundException
 	{
 		dri.navigate().to("http://superuser.com");
-		dri.manage().deleteAllCookies();
 		Thread.sleep(rand(2000, 6500));
 		System.out.println(dri.getCurrentUrl() + ": We should be at superuser.com now...");
 		ImagePanel.displayImage(dri.getScreenshotAs(OutputType.BASE64));
@@ -130,8 +132,14 @@ public class Driver
 		ImagePanel.displayImage(dri.getScreenshotAs(OutputType.BASE64));
 		dri.switchTo().defaultContent();
 		dri.navigate().to(chatURL);
-		Thread.sleep(10000);
-		System.out.println(dri.getCurrentUrl() + ": In the chatroom! Reading from the bot script file...");
+		Thread.sleep(rand(2000, 6500));
+		System.out.println(dri.getCurrentUrl() + ": In the chatroom! Authenticating...");
+		ImagePanel.displayImage(dri.getScreenshotAs(OutputType.BASE64));
+		
+		WebElement loginLink = dri.findElement(By.xpath("//a[starts-with(@href, '/login/global') and text() = 'logged in']"));
+		loginLink.click();
+		Thread.sleep(rand(5000, 6500));
+		System.out.println(dri.getCurrentUrl() + ": In the chatroom and authenticated!");
 		ImagePanel.displayImage(dri.getScreenshotAs(OutputType.BASE64));
 		
 		String content = readFile(scriptPath);
@@ -142,9 +150,11 @@ public class Driver
 		dri.executeScript(content);
 		
 		System.out.println("Running...");
-		while(true)
+		ImagePanel.displayImage(dri.getScreenshotAs(OutputType.BASE64));
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		for(String input = br.readLine(); input != null; input = br.readLine())
 		{
-			Thread.sleep(1000);
+			dri.executeScript(input);
 		}
 		
 	}
@@ -158,8 +168,12 @@ public class Driver
 	
 	public Driver() 
 	{
+		File fil = new File("cookies.txt");
+		fil.delete();
 		DesiredCapabilities caps = new DesiredCapabilities(DesiredCapabilities.phantomjs());
-		caps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36");
+		//caps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36");
+		caps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.13+ (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2");
+		caps.setCapability("phantomjs.cli.args", new String[] { "--cookies-file=" + fil.getAbsolutePath() });
 		dri = new PhantomJSDriver(caps);
 		dri.manage().deleteAllCookies();
 		dri.manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
