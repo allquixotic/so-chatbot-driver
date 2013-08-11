@@ -45,6 +45,7 @@ import javax.swing.UIManager;
 import javax.xml.bind.DatatypeConverter;
 
 public class ImagePanel extends JDialog {
+	private static final long serialVersionUID = 234303222393133650L;
 	private static ImagePanel INSTANCE = null;
 
 	private final ImageIcon ico = new ImageIcon();
