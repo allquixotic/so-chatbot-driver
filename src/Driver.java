@@ -24,6 +24,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -35,6 +36,7 @@ public class Driver
 	private final boolean useFirefox;
 	private final RemoteWebDriver dri;
 	private final String browserPath;
+	private final String profilePath;
 	public static final String programName = "so-chatbot-driver";
 	public static boolean displayScreenshots = false;
 	
@@ -60,6 +62,7 @@ public class Driver
 		options.addOption("p", "password", true, "Required: StackExchange password");
 		options.addOption(OptionBuilder.withLongOpt("chat-url").withDescription("Required: Chatroom URL").hasArg().withArgName("URL").create('c'));
 		options.addOption(OptionBuilder.withLongOpt("browser-path").withDescription("Optional: Browser binary path").hasArg().withArgName("PATH").create('l'));
+		options.addOption(OptionBuilder.withLongOpt("profile-path").withDescription("Optional: Firefox profile path, iff --firefox").hasArg().withArgName("PATH").create('x'));
 		try
 		{
 			line = parser.parse(options, args);
@@ -106,8 +109,14 @@ public class Driver
 			bp = line.getOptionValue('l');
 		}
 		
+		String pp = null;
+		if(line.hasOption("x"))
+		{
+			pp = line.getOptionValue('x');
+		}
+		
 		System.out.println("Arg processing finished; instantiating Driver object");
-		Driver d = new Driver(hff, bp);
+		Driver d = new Driver(hff, bp, pp);
 		try
 		{
 			d.go(line.getOptionValue('u'), line.getOptionValue('p'), line.getOptionValue('b'), line.getOptionValue('c'));
@@ -221,7 +230,10 @@ public class Driver
 		{
 			dri.executeScript(input);
 		}
-		
+		while(true)
+		{
+			Thread.sleep(10000);
+		}
 	}
 	
 	public static String readFile(String path) 
@@ -231,8 +243,9 @@ public class Driver
 	  return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 	
-	public Driver(boolean hff, String _browserPath) 
+	public Driver(boolean hff, String _browserPath, String _profilePath) 
 	{
+		profilePath = _profilePath;
 		browserPath = _browserPath;
 		this.useFirefox = hff;
 		if(useFirefox)
@@ -252,6 +265,11 @@ public class Driver
 				caps.setCapability(FirefoxDriver.BINARY, browserPath);
 			}
 			System.out.println("Instantiating FirefoxDriver");
+			if(profilePath != null && profilePath.length() > 0)
+			{
+				FirefoxProfile profile = new FirefoxProfile(new File(System.getProperty("user.home") + File.separator + "so-chatbot-profile" + File.separator + profilePath));
+				caps.setCapability(FirefoxDriver.PROFILE, profile);
+			}
 			dri = new FirefoxDriver(caps);
 		}
 		else
