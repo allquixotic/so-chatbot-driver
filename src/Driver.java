@@ -27,6 +27,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -238,7 +239,15 @@ public class Driver
 		this.useFirefox = hff;
 		if(useFirefox)
 		{
-			//Xvfb needs to be started if this is headless Linux
+			//NOTE: Xvfb needs to be started if this is headless Linux. We don't start Xvfb here, do it in a script, it's a lot less code in Bash.
+			
+			//Here we set the temporary directory to ~/so-chatbot-profile to eliminate potential problems with /tmp permissions, space, etc.
+			File fff = new File(System.getProperty("user.home") + File.separator + "so-chatbot-profile");
+			if(!fff.exists())
+			{
+				fff.mkdirs();
+			}
+			TemporaryFilesystem.setTemporaryDirectory(fff);
 			ProfilesIni profile = new ProfilesIni();
 			FirefoxProfile fp = profile.getProfile("default");
 			DesiredCapabilities caps = new DesiredCapabilities(DesiredCapabilities.firefox());

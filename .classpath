@@ -34,12 +34,12 @@
 	<classpathentry kind="lib" path="third_party/phantomjsdriver-1.0.4.jar"/>
 	<classpathentry kind="lib" path="third_party/protobuf-java-2.4.1.jar"/>
 	<classpathentry kind="lib" path="third_party/sac-1.3.jar"/>
-	<classpathentry kind="lib" path="third_party/selenium-java-2.34.0.jar"/>
 	<classpathentry kind="lib" path="third_party/serializer-2.7.1.jar"/>
 	<classpathentry kind="lib" path="third_party/testng-6.8.5.jar"/>
 	<classpathentry kind="lib" path="third_party/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="third_party/xercesImpl-2.10.0.jar"/>
 	<classpathentry kind="lib" path="third_party/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="lib" path="third_party/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="third_party/selenium-java-2.35.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
