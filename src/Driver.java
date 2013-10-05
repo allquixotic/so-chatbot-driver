@@ -21,9 +21,12 @@ import org.apache.commons.cli.ParseException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -33,6 +36,7 @@ public class Driver
 {
 	private final boolean useFirefox;
 	private final RemoteWebDriver dri;
+	private final String browserPath;
 	public static final String programName = "so-chatbot-driver";
 	public static boolean displayScreenshots = false;
 	
@@ -57,6 +61,7 @@ public class Driver
 		options.addOption("u", "username", true, "Required: StackExchange username or email");
 		options.addOption("p", "password", true, "Required: StackExchange password");
 		options.addOption(OptionBuilder.withLongOpt("chat-url").withDescription("Required: Chatroom URL").hasArg().withArgName("URL").create('c'));
+		options.addOption(OptionBuilder.withLongOpt("browser-path").withDescription("Optional: Browser binary path").hasArg().withArgName("PATH").create('l'));
 		try
 		{
 			line = parser.parse(options, args);
@@ -97,7 +102,13 @@ public class Driver
 		if(line.hasOption("f"))
 			hff = true;
 		
-		Driver d = new Driver(hff);
+		String bp = null;
+		if(line.hasOption("l"))
+		{
+			bp = line.getOptionValue('l');
+		}
+		
+		Driver d = new Driver(hff, bp);
 		try
 		{
 			d.go(line.getOptionValue('u'), line.getOptionValue('p'), line.getOptionValue('b'), line.getOptionValue('c'));
@@ -221,13 +232,23 @@ public class Driver
 	  return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 	
-	public Driver(boolean hff) 
+	public Driver(boolean hff, String _browserPath) 
 	{
+		browserPath = _browserPath;
 		this.useFirefox = hff;
 		if(useFirefox)
 		{
 			//Xvfb needs to be started if this is headless Linux
-			dri = new FirefoxDriver();
+			ProfilesIni profile = new ProfilesIni();
+			FirefoxProfile fp = profile.getProfile("default");
+			DesiredCapabilities caps = new DesiredCapabilities(DesiredCapabilities.firefox());
+			caps.setCapability("platform", Platform.LINUX);
+			if(browserPath != null && browserPath.length() > 0)
+			{
+				caps.setCapability("binary", browserPath);
+			}
+			caps.setCapability(FirefoxDriver.PROFILE, fp);
+			dri = new FirefoxDriver(caps);
 		}
 		else
 		{
