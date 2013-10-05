@@ -245,7 +245,7 @@ public class Driver
 			caps.setCapability("platform", Platform.LINUX);
 			if(browserPath != null && browserPath.length() > 0)
 			{
-				caps.setCapability("binary", browserPath);
+				caps.setCapability(FirefoxDriver.BINARY, browserPath);
 			}
 			caps.setCapability(FirefoxDriver.PROFILE, fp);
 			dri = new FirefoxDriver(caps);
