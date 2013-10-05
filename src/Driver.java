@@ -21,12 +21,9 @@ import org.apache.commons.cli.ParseException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -109,6 +106,7 @@ public class Driver
 			bp = line.getOptionValue('l');
 		}
 		
+		System.out.println("Arg processing finished; instantiating Driver object");
 		Driver d = new Driver(hff, bp);
 		try
 		{
@@ -248,15 +246,12 @@ public class Driver
 				fff.mkdirs();
 			}
 			TemporaryFilesystem.setTemporaryDirectory(fff);
-			ProfilesIni profile = new ProfilesIni();
-			FirefoxProfile fp = profile.getProfile("default");
 			DesiredCapabilities caps = new DesiredCapabilities(DesiredCapabilities.firefox());
-			caps.setCapability("platform", Platform.LINUX);
 			if(browserPath != null && browserPath.length() > 0)
 			{
 				caps.setCapability(FirefoxDriver.BINARY, browserPath);
 			}
-			caps.setCapability(FirefoxDriver.PROFILE, fp);
+			System.out.println("Instantiating FirefoxDriver");
 			dri = new FirefoxDriver(caps);
 		}
 		else
@@ -267,6 +262,7 @@ public class Driver
 			//caps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.95 Safari/537.36");
 			caps.setCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.13+ (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2");
 			caps.setCapability("phantomjs.cli.args", new String[] { "--cookies-file=" + fil.getAbsolutePath() });
+			System.out.println("Instantiating PhantomJSDriver");
 			dri = new PhantomJSDriver(caps);
 		}
 
