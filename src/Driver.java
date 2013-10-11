@@ -267,7 +267,7 @@ public class Driver
 			System.out.println("Instantiating FirefoxDriver");
 			if(profilePath != null && profilePath.length() > 0)
 			{
-				FirefoxProfile profile = new FirefoxProfile(new File(System.getProperty("user.home") + File.separator + "so-chatbot-profile" + File.separator + profilePath));
+				FirefoxProfile profile = new FirefoxProfile(new File(System.getProperty("user.home") + File.separator + "so-chatbot-profile" + File.separator + profilePath), true);
 				caps.setCapability(FirefoxDriver.PROFILE, profile);
 			}
 			dri = new FirefoxDriver(caps);
