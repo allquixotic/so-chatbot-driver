@@ -74,15 +74,12 @@ public class Driver {
 			s();
 			$(By.xpath("//a[.='logged in']")).click();
 			s();
-			$(By.xpath("//a[@title='log in with Stack_Exchange']")).click();
-			s();
-			switchTo().frame("affiliate-signin-iframe");
 			$(By.id("email")).setValue(conf.email);
 			$(By.id("password")).setValue(conf.password);
 			$(By.id("email")).setValue(conf.email);
 			$(By.id("password")).setValue(conf.password);
 			s();
-			$(By.cssSelector(".login-form form")).submit();
+			$(By.id("submit-button")).submit();
 			switchTo().parentFrame();
 			s();
 		}
